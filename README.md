@@ -9,14 +9,17 @@
 npm install
 npm run dev
 ```
+6. Click the localhost url presented in the integrated terminal to open with default browser
 
 # How to get debugger working
-Everything should be set up.
+Everything "should" be set up
 1. Have "npm run dev" entered in the Integrated Terminal
 2. Press "F5"
 
 
 # How to get intellisense to make sense!
-1. Have any .tsx file open.
-2. Press (cntrl + shift + '), enter Typescript: Select Typescript version.
-3. Select "Use workspace version".
+1. Have any .tsx file open
+2. Press (cntrl + shift + P), enter Typescript: Select Typescript version
+3. Select "Use workspace version"
+
+# Windblows only
