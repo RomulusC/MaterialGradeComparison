@@ -7,19 +7,19 @@
 npm install
 npm run dev
 ```
-5. Copy the localhost url presented into your browser
+5. Copy the localhost URL presented into your browser
 
 # How to clone repository and run website locally for development
 1. Install VS Code (text code editor with some special tools)
 2. Install GitHub client (click the "<> Code" button above, open with Github desktop)
-3. In the GitHub client, clone repository -> URL -> (enter url of this website)
+3. In the GitHub client, clone repository -> URL -> (enter URL of this website)
 4. In the GitHub client, click "Open in Visual Studio Code"
 5. In VS Code, open an Intergrated Terminal: click terminal in the top left or shortcut (ctrl+shift+'), and type in:
 ```
 npm install
 npm run dev
 ```
-6. Click the localhost url presented in the integrated terminal to open with default browser
+6. Click the localhost URL presented in the integrated terminal to open with default browser
 
 # How to get debugger working
 Everything "should" be set up
