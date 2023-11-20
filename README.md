@@ -15,6 +15,7 @@ npm run dev
 Everything "should" be set up
 1. Have "npm run dev" entered in the Integrated Terminal
 2. Press "F5"
+MS-Edge should open and present the webpage
 
 
 # How to get intellisense to make sense!
