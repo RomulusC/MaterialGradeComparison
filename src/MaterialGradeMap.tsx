@@ -39,10 +39,10 @@ function GetMaterialKeyNamePairs() : Record<string,string>
     const options : Record<string,string> = {};
     for (const [key, val] of Object.entries(GetMaterialGradeMap())) 
     {
-      if(key != undefined && val != undefined)
+      if(key != "")
       {
         // insert
-        options[key] = val.name!;
+        options[key] = val.name ?? "";
       }
     }
     return(options);

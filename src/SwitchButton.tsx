@@ -1,9 +1,9 @@
 
 export default function SwitchButton() : JSX.Element 
 {
-    const clickFnHandle = () => 
-    {
+    const clickFnHandle = () => {
         console.log("LOG");
+        return{};
     }
     
     return(
