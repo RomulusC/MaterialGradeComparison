@@ -1,5 +1,14 @@
-# How to clone repository and run website locally for development
+# How to quck run website locally
+1. Click the "<> Code" button above -> Download ZIP
+2. Extract in a folder (use 7zip or winrar)
+3. Open a command line in the extracted directory
+4. Run the below commands:
+```
+npm install
+npm run dev
+```
 
+# How to clone repository and run website locally for development
 1. Install VS Code (text code editor with some special tools)
 2. Install GitHub client (click the "<> Code" button above, open with Github desktop)
 3. In the GitHub client, clone repository -> URL -> (enter url of this website)
@@ -23,9 +32,9 @@ MS-Edge should open and present the webpage
 2. Press (ctrl+shift+P), enter Typescript: Select Typescript Version...
 3. Select "Use Workspace Version"
 
-# Windblows only
-
-# Useful links:
+# Useful links
 1. https://www.typescriptlang.org/docs/
 2. https://www.youtube.com/watch?v=TiSGujM22OI&list=PLC3y8-rFHvwi1AXijGTKM0BKtHzVC-LSK
 3. https://www.youtube.com/watch?v=hzzCveeczSQ&list=PLC3y8-rFHvwhiQJD1di4eRVN30WWCXkg1
+
+# Windblows Only!
