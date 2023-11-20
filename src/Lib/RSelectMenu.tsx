@@ -1,11 +1,11 @@
 import Select from "react-select"
 import { useState } from 'react';
 
-export type SelectOptionType = { label: string, value: string };
+export interface SelectOptionType { label: string, value: string }
 
-export function RSelectMenu(props:{keyNameMap: {[id: string]: string}, filterKeywords? :Array<string>}) : JSX.Element 
+export function RSelectMenu(props:{keyNameMap: Record<string, string>, filterKeywords? :string[]}) : JSX.Element 
 {
-    const valueLabelPairArr:Array<SelectOptionType> = new Array<SelectOptionType>();
+    const valueLabelPairArr:SelectOptionType[] = [];
     for (const [key, name] of Object.entries(props.keyNameMap)) 
     {
       const obj: SelectOptionType =
@@ -18,7 +18,7 @@ export function RSelectMenu(props:{keyNameMap: {[id: string]: string}, filterKey
     return(RPopulateMenu(valueLabelPairArr));
 }
 
-function RPopulateMenu(valueLabelPairArr:Array<SelectOptionType>) : JSX.Element 
+function RPopulateMenu(valueLabelPairArr:SelectOptionType[]) : JSX.Element 
 {
     const [selectedOption, setSelectedOption] = useState<SelectOptionType | null>(null);
 

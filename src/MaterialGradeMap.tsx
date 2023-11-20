@@ -1,5 +1,7 @@
 import {RSelectMenu} from './Lib/RSelectMenu.tsx'
 
+export type Label = Record<string,string>; 
+
 class Grade
 {
     name?: string                  = "";
@@ -32,9 +34,9 @@ export function GetMaterialGradeData(i_key: string) : Grade | null
     return(null)
 } 
 
-function GetMaterialKeyNamePairs() : {[id: string]: string}
+function GetMaterialKeyNamePairs() : Record<string,string>
 {
-    const options : {[id: string]: string} = {};
+    const options : Record<string,string> = {};
     for (const [key, val] of Object.entries(GetMaterialGradeMap())) 
     {
       if(key != undefined && val != undefined)
@@ -46,9 +48,9 @@ function GetMaterialKeyNamePairs() : {[id: string]: string}
     return(options);
 }
 
-function GetMaterialGradeMap() : {[id: string]: Grade}
+function GetMaterialGradeMap() : Record<string,Grade>
   {
-    const map: {[id: string]: Grade} = 
+    const map: Record<string,Grade> = 
     {
           "igf31": {
             name: "Rohacell IGF 31",
