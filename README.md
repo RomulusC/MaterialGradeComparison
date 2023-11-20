@@ -1,30 +1,22 @@
-# React + TypeScript + Vite
+# How to clone repository and run website locally for development
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+1. Install VS Code (text code editor with some special tools)
+2. Install GitHub Client (click the "<> Code" button above, Open with Github desktop)
+3. In GitHub Client, clone repository -> URL -> (enter url of this website)
+4. In GitHub Client, click "Open in Visual Studio Code"
+5. In VS Code, open an Intergrated Terminal: click terminal in the top left (or shortcut ctrl+shift+'), and type in:
+```
+npm install
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# How to get debugger working
+Everything should be set up.
+1. Have "npm run dev" entered in the Integrated Terminal
+2. press "F5"
+
+
+# How to get intellisense to make sense!
+1. Have any .tsx file open.
+2. Press (cntrl + shift + '), enter Typescript: Select Typescript version.
+3. Select "Use workspace version".
