@@ -7,6 +7,7 @@
 npm install
 npm run dev
 ```
+5. Copy the localhost url presented into your browser
 
 # How to clone repository and run website locally for development
 1. Install VS Code (text code editor with some special tools)
