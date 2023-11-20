@@ -17,4 +17,10 @@ Everything "should" be set up
 2. Press "F5"
 MS-Edge should open and present the webpage
 
+
+# How to get intellisense to make sense!
+1. Have any .tsx file open
+2. Press (cntrl + shift + P), enter Typescript: Select Typescript version
+3. Select "Use workspace version"
+
 # Windblows only
