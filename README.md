@@ -4,7 +4,7 @@
 2. Install GitHub Client (click the "<> Code" button above, Open with Github desktop)
 3. In GitHub Client, clone repository -> URL -> (enter url of this website)
 4. In GitHub Client, click "Open in Visual Studio Code"
-5. In VS Code, open an Intergrated Terminal: click terminal in the top left (or shortcut ctrl+shift+'), and type in:
+5. In VS Code, open an Intergrated Terminal: click terminal in the top left or shortcut (ctrl+shift+'), and type in:
 ```
 npm install
 npm run dev
@@ -13,7 +13,7 @@ npm run dev
 # How to get debugger working
 Everything should be set up.
 1. Have "npm run dev" entered in the Integrated Terminal
-2. press "F5"
+2. Press "F5"
 
 
 # How to get intellisense to make sense!
