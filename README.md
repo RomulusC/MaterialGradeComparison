@@ -24,3 +24,8 @@ MS-Edge should open and present the webpage
 3. Select "Use Workspace Version"
 
 # Windblows only
+
+# Useful links:
+1. https://www.typescriptlang.org/docs/
+2. https://www.youtube.com/watch?v=TiSGujM22OI&list=PLC3y8-rFHvwi1AXijGTKM0BKtHzVC-LSK
+3. https://www.youtube.com/watch?v=hzzCveeczSQ&list=PLC3y8-rFHvwhiQJD1di4eRVN30WWCXkg1
