@@ -22,7 +22,7 @@ function RPopulateMenu(valueLabelPairArr:SelectOptionType[]) : JSX.Element
 {
     const [selectedOption, setSelectedOption] = useState<SelectOptionType | null>(null);
 
-    const handleSelectionOnClick = (selectionVal: SelectOptionType| null) => 
+    const handleSelectionOnClick = (selectionVal: SelectOptionType| null) : void => 
     {
       setSelectedOption(selectionVal);
       console.log(`Option selected:`, selectionVal? selectionVal.value : "");
