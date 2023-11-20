@@ -11,7 +11,7 @@ class Grade
     elongationAtBreak?: number     = 0;
     maxCuringTemperature?: number  = 0;
     description?: string           = "";
-};
+}
 
 export function SelectBarMaterialMap() : JSX.Element 
 {
@@ -35,7 +35,7 @@ export function GetMaterialGradeData(i_key: string) : Grade | null
 function GetMaterialKeyNamePairs() : {[id: string]: string}
 {
     const options : {[id: string]: string} = {};
-    for (let [key, val] of Object.entries(GetMaterialGradeMap())) 
+    for (const [key, val] of Object.entries(GetMaterialGradeMap())) 
     {
       if(key != undefined && val != undefined)
       {

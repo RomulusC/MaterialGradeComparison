@@ -3,9 +3,9 @@ import { useState } from 'react';
 
 export type SelectOptionType = { label: string, value: string };
 
-export function RSelectMenu(props:{keyNameMap: {[id: string]: string}, filterKeywords? :Array<any>}) : JSX.Element 
+export function RSelectMenu(props:{keyNameMap: {[id: string]: string}, filterKeywords? :Array<string>}) : JSX.Element 
 {
-    let valueLabelPairArr:Array<SelectOptionType> = new Array<SelectOptionType>();
+    const valueLabelPairArr:Array<SelectOptionType> = new Array<SelectOptionType>();
     for (const [key, name] of Object.entries(props.keyNameMap)) 
     {
       const obj: SelectOptionType =
@@ -25,7 +25,7 @@ function RPopulateMenu(valueLabelPairArr:Array<SelectOptionType>) : JSX.Element
     const handleSelectionOnClick = (selectionVal: SelectOptionType| null) => 
     {
       setSelectedOption(selectionVal);
-      console.log(`Option selected:`, selectionVal?.value!);
+      console.log(`Option selected:`, selectionVal? selectionVal.value : "");
     };
  
     return(
