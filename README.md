@@ -35,15 +35,17 @@ MS-Edge should open and present the webpage
 
 # How to get Android Emulation working for development
 1. Download & install https://developer.android.com/studio
-2. In Android Studio, ensure you are running a phone emulation
-3. 
+2. In VS Code, install the "Ionic" extention
+3. In VS Code Intergrated Terminal:
 ```
-npm run build
 npx cap add android
+npm run reload
 npx cap open android
 ```
-4. In Android Studio, select "Build Module" (top centre)
-5. In Android Studio, select "Run App" (top right)
+4. Android Studio will open, WAIT until bottom right progress bar is finished (will cause issues if we interrupt)
+5. In Android Studio, ensure you are running a phone emulation
+6. In VS Code Ionic extention, ensure Settings->Live Reload is checked
+7. In VS Code Ionic extention, click the play/run button on Run->Android 
 
 # Useful links
 1. https://www.typescriptlang.org/docs/

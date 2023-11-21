@@ -34,7 +34,7 @@ function RPopulateMenu(valueLabelPairArr:SelectOptionType[]) : JSX.Element
                 <div className="SelectBox">
                     <Select options={valueLabelPairArr} onChange={handleSelectionOnClick} autoFocus={true} />
                     <div className="mt-4">
-                        {selectedOption && <>You&#39;ve have selected {selectedOption.value}</>}
+                        {selectedOption && <>You&#39;ve have selected {selectedOption.value} - Live-Reload Enabled</>}
                     </div>
                 </div>
             </div>
