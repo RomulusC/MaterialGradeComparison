@@ -5,7 +5,8 @@ const config: CapacitorConfig = {
   appName: 'productcomparisonv2',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
+    url: "http://localhost:3000",
+    cleartext: true
   }
 };
 
