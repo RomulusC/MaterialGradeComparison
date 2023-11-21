@@ -33,9 +33,22 @@ MS-Edge should open and present the webpage
 2. Press (ctrl+shift+P), enter Typescript: Select Typescript Version...
 3. Select "Use Workspace Version"
 
+# How to get Android Emulation working for development
+1. Download & install https://developer.android.com/studio
+2. In Android Studio, ensure you are running a phone emulation
+3. 
+```
+npm run build
+npx cap add android
+npx cap open android
+```
+4. In Android Studio, select "Build Module" (top centre)
+5. In Android Studio, select "Run App" (top right)
+
 # Useful links
 1. https://www.typescriptlang.org/docs/
 2. https://www.youtube.com/watch?v=TiSGujM22OI&list=PLC3y8-rFHvwi1AXijGTKM0BKtHzVC-LSK
 3. https://www.youtube.com/watch?v=hzzCveeczSQ&list=PLC3y8-rFHvwhiQJD1di4eRVN30WWCXkg1
+4. https://capacitorjs.com/docs/basics/workflow
 
 # Windblows Only!
