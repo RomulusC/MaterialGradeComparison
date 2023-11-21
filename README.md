@@ -43,7 +43,8 @@ npm run reload
 npx cap open android
 ```
 4. Android Studio will open, WAIT until bottom right progress bar is finished (will cause issues if we interrupt)
-5. In Android Studio, ensure you are running a phone emulation
+5. In Android Studio, build (Make Module: located top right) (if this doesnt work, close Android Studio, delete the Android folder and goto step 3)
+5. In Android Studio, ensure you are running a phone emulation. On the sideways tab on the Right->Device Manger->Run Play button (you may need to create a device)
 6. In VS Code Ionic extention, ensure Settings->Live Reload is checked
 7. In VS Code Ionic extention, click the play/run button on Run->Android 
 
