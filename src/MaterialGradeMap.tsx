@@ -1,72 +1,90 @@
 import {RSelectMenu} from './Lib/RSelectMenu.tsx'
 import ExcelJS from 'exceljs'
 
-
 const url = "https://docs.google.com/spreadsheets/d/1uCKHsgeu1TUDqvVJQ2T89dLbTLlLwSxB/export?format=xlsx";
 export type Label = Record<string,string>; 
 
 class Grade
 {
-    name?: string                  = "";
-    density?: number               = 0;
-    compressiveStrength?: number   = 0;
-    tensileStrength?: number       = 0;
-    shearStrength?: number         = 0;
-    thermoformingTemp?: number     = 0;
-    elongationAtBreak?: number     = 0;
-    maxCuringTemperature?: number  = 0;
-    description?: string           = "";
+	name?: string					 = "";
+	density?: number				 = 0;
+	compressiveStrength?: number	 = 0;
+	tensileStrength?: number		 = 0;
+	shearStrength?: number			 = 0;
+	thermoformingTemp?: number		 = 0;
+	elongationAtBreak?: number		 = 0;
+	maxCuringTemperature?: number	 = 0;
+	colorRef?:number				 = 0; // preferably an hexdecimal color object
+	blockSize?: [x:number, y:number] = [0,0];
+	estBlockuice?: number			 = 0;
+	skinny?: number					 = 0;
+	superskinny?:number				 = 0;
+	qA?:number						 = 0;
+	description?: string			 = "";
 }
 
-function RequestDataExcelSheet() : void
+function RequestDataExcelSheet() : Record<string,Grade>
 {
-	var req = new XMLHttpRequest();
+	const req = new XMLHttpRequest();
     req.open("GET", url, true);
     req.responseType = "arraybuffer";
 
-    req.onload = function() 
+    req.onload = async function() : Promise<void>
     {
-      const arrayBuffer :ArrayBuffer = this.response;
+		try
+		{
+			const arrayBuffer :ArrayBuffer = this.response as ArrayBuffer;
       
-      const workbook: ExcelJS.Workbook = new ExcelJS.Workbook();
-      const promise: Promise<ExcelJS.Workbook> = workbook.xlsx.load(arrayBuffer);
-      promise.then
-      ( (i:ExcelJS.Workbook) => 
-      {
-        const workSheet: ExcelJS.Worksheet | undefined = i.getWorksheet();
-		const rows: ExcelJS.Row[] | undefined = workSheet && workSheet.getRows(0,workSheet.rowCount);
-
-		const titleRow: string[] = [];
-		rows![3].eachCell( (cell: ExcelJS.Cell, colNumber: number) =>
-		{
-			titleRow.push(cell.toString());
-		});
-
-		const productRows: string[][] = [];
-
-		for(let i = 4; i < workSheet!.rowCount; i++ )
-		{
-			let row: string[] = [];
-			rows![i].eachCell( (cell: ExcelJS.Cell, colNumber: number) =>
+			const workbook: ExcelJS.Workbook = new ExcelJS.Workbook();
+			await workbook.xlsx.load(arrayBuffer);
+	
+			const workSheet: ExcelJS.Worksheet | undefined = workbook.getWorksheet();
+			const rows: ExcelJS.Row[] | undefined = workSheet?.getRows(0,workSheet.rowCount);
+	
+			if(rows == undefined || workSheet == undefined)
 			{
-				row.push(cell.toString());
+				console.log("Excel File returned null on rows!");
+				return;
+			}
+			const titleRow: string[] = [];
+			rows[3].eachCell( (cell: ExcelJS.Cell, /*colNumber: number*/) =>
+			{
+				titleRow.push(cell.toString());
 			});
+	
+			const productRows: string[][] = [];
+			for(let i = 4; i < workSheet.rowCount; i++ )
+			{
+				const row: string[] = [];
+				rows[i].eachCell( (cell: ExcelJS.Cell, /*colNumber: number*/) =>
+				{
+					row.push(cell.toString());
+				});
+	
+				productRows[i - 4] = row;
+			}
+	
+			console.log(titleRow);
+			console.log(productRows);
 
-			productRows[i - 4] = row;
+			// override data
 		}
-
-		console.log(titleRow);
-		console.log(productRows);
-		
-      });
+		catch(error)
+		{
+			console.log(error);
+		}
     };
+
     req.send();
+    const record: Record<string,Grade> = {};
+
+	return record;
 }
 
 export function SelectBarMaterialMap() : JSX.Element 
 {
-    RequestDataExcelSheet();
-	
+    /*const record: Record<string,Grade> =*/ RequestDataExcelSheet();
+
 	return(
 		<RSelectMenu keyNameMap={GetMaterialKeyNamePairs()}/>
 	); 
