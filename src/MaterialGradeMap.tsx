@@ -1,5 +1,8 @@
 import {RSelectMenu} from './Lib/RSelectMenu.tsx'
+import ExcelJS from 'exceljs'
 
+
+const url = "https://docs.google.com/spreadsheets/d/1uCKHsgeu1TUDqvVJQ2T89dLbTLlLwSxB/export?format=xlsx";
 export type Label = Record<string,string>; 
 
 class Grade
@@ -15,8 +18,55 @@ class Grade
     description?: string           = "";
 }
 
+function RequestDataExcelSheet() : void
+{
+	var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    req.responseType = "arraybuffer";
+
+    req.onload = function() 
+    {
+      const arrayBuffer :ArrayBuffer = this.response;
+      
+      const workbook: ExcelJS.Workbook = new ExcelJS.Workbook();
+      const promise: Promise<ExcelJS.Workbook> = workbook.xlsx.load(arrayBuffer);
+      promise.then
+      ( (i:ExcelJS.Workbook) => 
+      {
+        const workSheet: ExcelJS.Worksheet | undefined = i.getWorksheet();
+		const rows: ExcelJS.Row[] | undefined = workSheet && workSheet.getRows(0,workSheet.rowCount);
+
+		const titleRow: string[] = [];
+		rows![3].eachCell( (cell: ExcelJS.Cell, colNumber: number) =>
+		{
+			titleRow.push(cell.toString());
+		});
+
+		const productRows: string[][] = [];
+
+		for(let i = 4; i < workSheet!.rowCount; i++ )
+		{
+			let row: string[] = [];
+			rows![i].eachCell( (cell: ExcelJS.Cell, colNumber: number) =>
+			{
+				row.push(cell.toString());
+			});
+
+			productRows[i - 4] = row;
+		}
+
+		console.log(titleRow);
+		console.log(productRows);
+		
+      });
+    };
+    req.send();
+}
+
 export function SelectBarMaterialMap() : JSX.Element 
 {
+    RequestDataExcelSheet();
+	
 	return(
 		<RSelectMenu keyNameMap={GetMaterialKeyNamePairs()}/>
 	); 
