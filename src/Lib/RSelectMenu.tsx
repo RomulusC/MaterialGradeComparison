@@ -1,12 +1,13 @@
 import Select from "react-select"
-import { useState } from 'react';
+import { useState, useContext } from 'react'
+import {GradeMapContext} from '../MaterialGradeMap.tsx'
 
 export interface SelectOptionType { label: string, value: string }
 
-export function RSelectMenu(props:{keyNameMap: Record<string, string>, filterKeywords? :string[]}) : JSX.Element 
+export function ExtractOptions(keyNameMap: Record<string, string>, /*filterKeywords? :string[]*/) : SelectOptionType[]
 {
     const valueLabelPairArr:SelectOptionType[] = [];
-    for (const [key, name] of Object.entries(props.keyNameMap)) 
+    for (const [key, name] of Object.entries(keyNameMap)) 
     {
       const obj: SelectOptionType =
       {
@@ -15,11 +16,14 @@ export function RSelectMenu(props:{keyNameMap: Record<string, string>, filterKey
       };
       valueLabelPairArr.push(obj);
     } 
-    return(RPopulateMenu(valueLabelPairArr));
+    return valueLabelPairArr;
 }
 
-function RPopulateMenu(valueLabelPairArr:SelectOptionType[]) : JSX.Element 
+
+export function RPopulateMenu() : JSX.Element 
 {
+    const selectOptions: SelectOptionType[] | undefined = useContext(GradeMapContext);
+
     const [selectedOption, setSelectedOption] = useState<SelectOptionType | null>(null);
 
     const handleSelectionOnClick = (selectionVal: SelectOptionType| null) : void => 
@@ -32,7 +36,7 @@ function RPopulateMenu(valueLabelPairArr:SelectOptionType[]) : JSX.Element
         <>
             <div className="container">
                 <div className="SelectBox">
-                    <Select options={valueLabelPairArr} onChange={handleSelectionOnClick} autoFocus={true} />
+                    <Select options={selectOptions} onChange={handleSelectionOnClick} autoFocus={true} />
                     <div className="mt-4">
                         {selectedOption && <>You&#39;ve have selected {selectedOption.value} - Live-Reload Enabled</>}
                     </div>
