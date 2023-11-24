@@ -1,0 +1,44 @@
+
+body 
+{
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f2f2f2;
+}
+
+.SelectBoxContainer 
+{
+  max-width: 800px; 
+  margin: 0 auto; 
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/*.SelectBox
+{
+
+}*/
+
+/*.SelectBoxTxt
+{
+
+}*/
+
+.Switch-Grades-Button 
+{
+  padding: 0px 3px;
+  display: block;
+}
+
+.Switch-Grades-Button img 
+{
+  width: 25px; 
+  height: 25px;
+}

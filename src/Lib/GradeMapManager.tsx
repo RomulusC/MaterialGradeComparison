@@ -1,14 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ExcelJS from 'exceljs'
-import {RPopulateMenu, ExtractOptions, SelectOptionType} from './Lib/RSelectMenu.tsx'
+import { SelectOptionType } from './SelectLabelUtils.tsx';
+import { RecordToSelectOptionTypeArr } from './SelectLabelUtils.tsx'
 
-const url = "https://docs.google.com/spreadsheets/d/1uCKHsgeu1TUDqvVJQ2T89dLbTLlLwSxB/export?format=xlsx";
-
-export type Label = Record<string,string>; 
-
-let m_gradeMap: Record<string,Grade> = {};
-
-class Grade
+export class MaterialGrade
 {
 	name?: string					 = "";
 	density?: number				 = 0;
@@ -27,7 +22,7 @@ class Grade
 	description?: string			 = "";
 }
 
-export function RequestDataExcelSheet(SetSelectOptions: React.Dispatch<React.SetStateAction<SelectOptionType[]>>): void
+export function RequestXlsxAndApplyGradeMap(SetSelectOptionsCallback: React.Dispatch<React.SetStateAction<SelectOptionType[]>>): void
 {
 	const req = new XMLHttpRequest();
 	req.open("GET", url, true);
@@ -57,13 +52,13 @@ export function RequestDataExcelSheet(SetSelectOptions: React.Dispatch<React.Set
 				titleRow.push(cell.toString());
 			});
 
-			const map: Record<string,Grade> = {};
+			const map: Record<string,MaterialGrade> = {};
 
 			for(let i = 5; i < workSheet.rowCount; i++ )
 			{
 				const blockSizeSplit: string[] = rows[i].getCell("L").toString().split("x");
 
-				const grade: Grade = 
+				const grade: MaterialGrade = 
 				{
 					name : rows[i].getCell("B").toString(),
 					density : parseFloat(rows[i].getCell("C").toString()),
@@ -81,26 +76,18 @@ export function RequestDataExcelSheet(SetSelectOptions: React.Dispatch<React.Set
 					qA: parseFloat(rows[i].getCell("P").toString()),
 					description: rows[i].getCell("Q").toString(),
 				};
+
+				// Insert Key-Grade Pair 
 				if(rows[i].getCell("A").toString() != "")
 				{
 					map[rows[i].getCell("A").toString()] = grade;
 				}
 			}
+
 			m_gradeMap = map;
 
-
-			const valueLabelPairArr:SelectOptionType[] = [];
-    		for (const [key, name] of Object.entries(GetMaterialKeyNamePairs()))
-    		{
-      				const obj: SelectOptionType =
-      			{
-        			label: name,
-        			value: key
-      			};
-
-      			valueLabelPairArr.push(obj);
-    		} 
-			SetSelectOptions(ExtractOptions(GetMaterialKeyNamePairs()));
+			const keyNameMap: Record<string,string> = GetMaterialKeyNamePairs(m_gradeMap);
+			SetSelectOptionsCallback(RecordToSelectOptionTypeArr(keyNameMap));
 		}
 
 		catch(error)
@@ -112,39 +99,62 @@ export function RequestDataExcelSheet(SetSelectOptions: React.Dispatch<React.Set
 	req.send();
 }
 
-export const GradeMapContext = React.createContext<SelectOptionType[] | undefined>(undefined);
-
-export function SelectBarsMaterialMap() : JSX.Element 
+export function SetSelectedGradeOption(key:string, isFirst:boolean/*true=first false=second*/) : void
 {
-
-	const [selectOptions, SetSelectOptions] = useState<SelectOptionType[]>(ExtractOptions(GetMaterialKeyNamePairs())); //TODO: Read Local Save first
-
-	RequestDataExcelSheet(SetSelectOptions);
-
-	return(
-		<GradeMapContext.Provider value={selectOptions}>
-			<RPopulateMenu/>
-			<RPopulateMenu/>
-		</GradeMapContext.Provider>
-	); 
+	if(isFirst)
+	{
+		m_selectedGradeKeys.first = key;
+	}
+	else
+	{
+		m_selectedGradeKeys.second = key;
+	}
+	OnSelectedMaterialOptions();
 }
 
-export function GetMaterialGradeData(i_key: string) : Grade | null
+export function AddCallbackOnSelectedMaterialOptions(SetSelectedOptionCallback: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>) : void
 {
-	for (const [key, val] of Object.entries(GetMaterialGradeMap())) 
+	m_refreshCallbacks.push(SetSelectedOptionCallback);
+}
+
+export function OnSwitchButtonSelected() : void
+{
+	const tempfirstKey : string | null = m_selectedGradeKeys.first;
+	m_selectedGradeKeys.first = m_selectedGradeKeys.second;
+	m_selectedGradeKeys.second = tempfirstKey;
+
+	OnSelectedMaterialOptions();
+}
+
+function GetSelectedMaterialGrades() : [MaterialGrade, MaterialGrade] | null
+{
+	const firstMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_selectedGradeKeys.first);
+	const secondMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_selectedGradeKeys.second);
+
+	if(firstMaterialGrade != null && secondMaterialGrade != null)
 	{
-		if(i_key === key)
+		return [firstMaterialGrade, secondMaterialGrade];
+	}
+
+	return null;
+}
+
+function OnSelectedMaterialOptions() : void
+{
+	for(const callback of m_refreshCallbacks)
+	{
+		const materialGrade: [MaterialGrade, MaterialGrade] | null = GetSelectedMaterialGrades();
+		if(materialGrade != null)
 		{
-			return val;
+			callback(materialGrade);
 		}
 	}
-	return(null)
-} 
+}
 
-function GetMaterialKeyNamePairs() : Record<string,string>
+function GetMaterialKeyNamePairs(i_MaterialGradeMap: Record<string,MaterialGrade>) : Record<string,string>
 {
 	const options : Record<string,string> = {};
-	for (const [key, val] of Object.entries(GetMaterialGradeMap())) 
+	for (const [key, val] of Object.entries(i_MaterialGradeMap)) 
 	{
 	  if(key != "")
 	  {
@@ -155,7 +165,31 @@ function GetMaterialKeyNamePairs() : Record<string,string>
 	return(options);
 }
 
-function GetMaterialGradeMap() : Record<string,Grade>
+function GetMaterialGradeMap() : Record<string,MaterialGrade>
 {
 	return(m_gradeMap);
-}          
+}
+
+function GetMaterialGradeFromKey(i_key: string| null) : MaterialGrade | null
+{
+	if(i_key == null)
+	{
+		return(null);
+	}
+
+	for (const [key, val] of Object.entries(GetMaterialGradeMap())) 
+	{
+		if(i_key === key)
+		{
+			return val;
+		}
+	}
+	return(null)
+}
+
+const url = "https://docs.google.com/spreadsheets/d/1uCKHsgeu1TUDqvVJQ2T89dLbTLlLwSxB/export?format=xlsx";
+
+const m_selectedGradeKeys: {first:string|null, second:string|null} = {first:null,second:null};
+const m_refreshCallbacks: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>[] = [];
+
+let m_gradeMap: Record<string,MaterialGrade> = {};
