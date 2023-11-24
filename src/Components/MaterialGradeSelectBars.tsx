@@ -1,26 +1,25 @@
 import Select from "react-select"
-import React, { useState, useContext } from 'react'
+import { useState } from 'react'
 import { SelectOptionType } from '../Lib/SelectLabelUtils.tsx'
-import { RequestXlsxAndApplyGradeMap, SetSelectedGradeOption } from '../Lib/GradeMapManager.tsx'
-
-const m_gradeMapUpdatedContext = React.createContext<SelectOptionType[] | undefined>(undefined);
+import { RequestXlsxAndApplyGradeMap, SetSelectedGradeOption, AddCallbackOnGradeMapChanged } from '../Lib/GradeMapManager.tsx'
 
 export default function MaterialGradeSelectBars() : JSX.Element  
 {
+	RequestXlsxAndApplyGradeMap();
+
 	const [selectOptionsArr, SetSelectOptionsArrCallback] = useState<SelectOptionType[]>([]); // TODO: Have a backend cache and serve Excel file
-	RequestXlsxAndApplyGradeMap(SetSelectOptionsArrCallback);
+    AddCallbackOnGradeMapChanged(SetSelectOptionsArrCallback);
 
 	return(
-		<m_gradeMapUpdatedContext.Provider value={selectOptionsArr}>
-			<GradeSelect isFirst={true}/>
-			<GradeSelect isFirst={false}/>
-		</m_gradeMapUpdatedContext.Provider>
+        <>
+			<GradeSelect selectOptionsArr={selectOptionsArr} isFirst={true}/>
+			<GradeSelect  selectOptionsArr={selectOptionsArr} isFirst={false}/>
+        </>
 	); 
 }
 
-function GradeSelect(props:{isFirst: boolean}) : JSX.Element 
+function GradeSelect(props:{selectOptionsArr: SelectOptionType[], isFirst: boolean}) : JSX.Element 
 {
-    const selectOptionsArr: SelectOptionType[] | undefined = useContext(m_gradeMapUpdatedContext);
 
     const [selectedOption, SetSelectedOption] = useState<SelectOptionType | null>(null);
 
@@ -37,7 +36,7 @@ function GradeSelect(props:{isFirst: boolean}) : JSX.Element
         <>
             <div className="SelectBoxContainer">
                 <div className="SelectBox">
-                    <Select options={selectOptionsArr} onChange={handleSelectionOnClickCallback} autoFocus={true} />
+                    <Select options={props.selectOptionsArr} onChange={handleSelectionOnClickCallback} autoFocus={true} />
                     <div className="SelectBoxTxt">
                         {selectedOption && <>You&#39;ve have selected {selectedOption.value}</>}
                     </div>

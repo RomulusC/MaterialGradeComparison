@@ -22,7 +22,7 @@ export class MaterialGrade
 	description?: string			 = "";
 }
 
-export function RequestXlsxAndApplyGradeMap(SetSelectOptionsCallback: React.Dispatch<React.SetStateAction<SelectOptionType[]>>): void
+export function RequestXlsxAndApplyGradeMap(): void
 {
 	const req = new XMLHttpRequest();
 	req.open("GET", url, true);
@@ -86,8 +86,7 @@ export function RequestXlsxAndApplyGradeMap(SetSelectOptionsCallback: React.Disp
 
 			m_gradeMap = map;
 
-			const keyNameMap: Record<string,string> = GetMaterialKeyNamePairs(m_gradeMap);
-			SetSelectOptionsCallback(RecordToSelectOptionTypeArr(keyNameMap));
+			OnGradeMapChanged();
 		}
 
 		catch(error)
@@ -103,33 +102,38 @@ export function SetSelectedGradeOption(key:string, isFirst:boolean/*true=first f
 {
 	if(isFirst)
 	{
-		m_selectedGradeKeys.first = key;
+		m_currentSelectedGradeKeys.first = key;
 	}
 	else
 	{
-		m_selectedGradeKeys.second = key;
+		m_currentSelectedGradeKeys.second = key;
 	}
 	OnSelectedMaterialOptions();
 }
 
 export function AddCallbackOnSelectedMaterialOptions(SetSelectedOptionCallback: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>) : void
 {
-	m_refreshCallbacks.push(SetSelectedOptionCallback);
+	m_onSelectCallbacks.push(SetSelectedOptionCallback);
+}
+
+export function AddCallbackOnGradeMapChanged(SetSelectOptionsArrCallback: React.Dispatch<React.SetStateAction<SelectOptionType[]>>) : void
+{
+	m_onGradeMapChanged.push(SetSelectOptionsArrCallback);
 }
 
 export function OnSwitchButtonSelected() : void
 {
-	const tempfirstKey : string | null = m_selectedGradeKeys.first;
-	m_selectedGradeKeys.first = m_selectedGradeKeys.second;
-	m_selectedGradeKeys.second = tempfirstKey;
+	const tempfirstKey : string | null = m_currentSelectedGradeKeys.first;
+	m_currentSelectedGradeKeys.first = m_currentSelectedGradeKeys.second;
+	m_currentSelectedGradeKeys.second = tempfirstKey;
 
 	OnSelectedMaterialOptions();
 }
 
 function GetSelectedMaterialGrades() : [MaterialGrade, MaterialGrade] | null
 {
-	const firstMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_selectedGradeKeys.first);
-	const secondMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_selectedGradeKeys.second);
+	const firstMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_currentSelectedGradeKeys.first);
+	const secondMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_currentSelectedGradeKeys.second);
 
 	if(firstMaterialGrade != null && secondMaterialGrade != null)
 	{
@@ -141,13 +145,24 @@ function GetSelectedMaterialGrades() : [MaterialGrade, MaterialGrade] | null
 
 function OnSelectedMaterialOptions() : void
 {
-	for(const callback of m_refreshCallbacks)
+	for(const callback of m_onSelectCallbacks)
 	{
 		const materialGrade: [MaterialGrade, MaterialGrade] | null = GetSelectedMaterialGrades();
 		if(materialGrade != null)
 		{
 			callback(materialGrade);
 		}
+	}
+}
+
+function OnGradeMapChanged() : void
+{
+	const keyNameMap: Record<string,string> = GetMaterialKeyNamePairs(m_gradeMap);
+	const selectedOptions: SelectOptionType[] = RecordToSelectOptionTypeArr(keyNameMap);
+	
+	for(const callback of m_onGradeMapChanged)
+	{
+		callback(selectedOptions);
 	}
 }
 
@@ -189,7 +204,8 @@ function GetMaterialGradeFromKey(i_key: string| null) : MaterialGrade | null
 
 const url = "https://docs.google.com/spreadsheets/d/1uCKHsgeu1TUDqvVJQ2T89dLbTLlLwSxB/export?format=xlsx";
 
-const m_selectedGradeKeys: {first:string|null, second:string|null} = {first:null,second:null};
-const m_refreshCallbacks: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>[] = [];
+const m_currentSelectedGradeKeys: {first:string|null, second:string|null} = {first:null,second:null};
+const m_onSelectCallbacks: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>[] = [];
+const m_onGradeMapChanged: React.Dispatch<React.SetStateAction<SelectOptionType[]>>[] = [];
 
 let m_gradeMap: Record<string,MaterialGrade> = {};
