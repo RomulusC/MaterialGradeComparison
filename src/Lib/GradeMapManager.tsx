@@ -150,11 +150,11 @@ function NotifyGetMaterialOnSelect() : void
 function GetSelectedMaterialGrades() : MaterialGrade[]
 {
 	const outArr: MaterialGrade[] = [];
-	m_selectedOptionsArrCache.forEach( (value: SelectOptionType | null, _index: number) : void =>
+	m_selectedOptionsArrCache.forEach( (value: SelectOptionType | null) : void =>
 	{
-		if(m_selectedOptionsArrCache[_index]?.value != null)
+		if(value?.value != null)
 		{
-			const out = GetMaterialGradeFromKey(value!.value);
+			const out = GetMaterialGradeFromKey(value.value);
 			out && outArr.push(out);
 		}
 	});

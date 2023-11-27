@@ -62,7 +62,7 @@ function GradeSelect(props:{i_index: number,
         }
         else
         {
-            let append: boolean = true;
+            let append = true;
             for(let i:number = props.i_optionsListAndSelectedOption.length - 1; i >= 0; i--)
             {
                 const element = props.i_optionsListAndSelectedOption[i];
@@ -84,7 +84,7 @@ function GradeSelect(props:{i_index: number,
 
     };
 
-    const isOptionDisabledCallback = ( option: { label: string; value: string; }) => 
+    const isOptionDisabledCallback = ( option: { label: string; value: string; }): boolean => 
     {
         for(const it of props.i_optionsListAndSelectedOption)
         {

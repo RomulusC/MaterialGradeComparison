@@ -15,10 +15,10 @@ export default function DisplayChosenMaterialGrades() : JSX.Element
     return(
         <>
             {
-                materialGradeSet.map( (value: MaterialGrade, index: number) =>
+                materialGradeSet.map( (value: MaterialGrade) =>
                     <>
                         <div className="SelectBoxContainer">
-                            {value &&<> {GetDebugMaterialGradeDataAsStringArr(value)} </>}
+                            {<> {GetDebugMaterialGradeDataAsStringArr(value)} </>}
                         </div>
                     </>
                 )
