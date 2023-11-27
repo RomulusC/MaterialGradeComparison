@@ -98,61 +98,67 @@ export function RequestXlsxAndApplyGradeMap(): void
 	req.send();
 }
 
-export function SetSelectedGradeOption(key:string, isFirst:boolean/*true=first false=second*/) : void
+export function NotifySelectedOptionsToGradeMapManager( selectedOptionsArr:(SelectOptionType | null) []) : void
 {
-	if(isFirst)
-	{
-		m_currentSelectedGradeKeys.first = key;
-	}
-	else
-	{
-		m_currentSelectedGradeKeys.second = key;
-	}
-	OnSelectedMaterialOptions();
+	m_selectedOptionsArrCache = selectedOptionsArr;
+	NotifyGetMaterialOnSelect();
 }
 
-export function AddCallbackOnSelectedMaterialOptions(SetSelectedOptionCallback: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>) : void
-{
-	m_onSelectCallbacks.push(SetSelectedOptionCallback);
-}
-
-export function AddCallbackOnGradeMapChanged(SetSelectOptionsArrCallback: React.Dispatch<React.SetStateAction<SelectOptionType[]>>) : void
+export function RegisterCallbackOnGradeMapChanged(SetSelectOptionsArrCallback: React.Dispatch<React.SetStateAction<SelectOptionType[]>>) : void
 {
 	m_onGradeMapChanged.push(SetSelectOptionsArrCallback);
 }
 
+export function RegisterCallbackSetSelectedOptionsArr(callback:React.Dispatch<React.SetStateAction<(SelectOptionType | null)[]>>) : void
+{
+	m_notifySelectBarsOnSwitchButton = callback;
+}
+
+export function RegisterGetMaterialOnSelect(callback:React.Dispatch<React.SetStateAction<MaterialGrade[]>>) : void
+{
+	m_notifyGetMaterialOnSelect.push(callback);
+}
+
 export function OnSwitchButtonSelected() : void
 {
-	const tempfirstKey : string | null = m_currentSelectedGradeKeys.first;
-	m_currentSelectedGradeKeys.first = m_currentSelectedGradeKeys.second;
-	m_currentSelectedGradeKeys.second = tempfirstKey;
-
-	OnSelectedMaterialOptions();
-}
-
-function GetSelectedMaterialGrades() : [MaterialGrade, MaterialGrade] | null
-{
-	const firstMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_currentSelectedGradeKeys.first);
-	const secondMaterialGrade: MaterialGrade | null = GetMaterialGradeFromKey(m_currentSelectedGradeKeys.second);
-
-	if(firstMaterialGrade != null && secondMaterialGrade != null)
+	// swap contents of m_selectedOptionsArrCache
+	let lastIndex = m_selectedOptionsArrCache.length-1;
+	if(m_selectedOptionsArrCache[lastIndex]?.value == null)
 	{
-		return [firstMaterialGrade, secondMaterialGrade];
+		lastIndex = m_selectedOptionsArrCache.length-2;
 	}
 
-	return null;
+	for(let i = 0; i < Math.ceil(lastIndex / 2); i++)
+	{
+		const tmp = m_selectedOptionsArrCache[i];
+		m_selectedOptionsArrCache[i] = m_selectedOptionsArrCache[lastIndex-i];
+		m_selectedOptionsArrCache[lastIndex-i] = tmp;
+	}
+
+	m_notifySelectBarsOnSwitchButton([...m_selectedOptionsArrCache]);
+	NotifyGetMaterialOnSelect();
 }
 
-function OnSelectedMaterialOptions() : void
+function NotifyGetMaterialOnSelect() : void
 {
-	for(const callback of m_onSelectCallbacks)
+	for(const it of m_notifyGetMaterialOnSelect)
 	{
-		const materialGrade: [MaterialGrade, MaterialGrade] | null = GetSelectedMaterialGrades();
-		if(materialGrade != null)
+		it(GetSelectedMaterialGrades());
+	}
+}
+
+function GetSelectedMaterialGrades() : MaterialGrade[]
+{
+	const outArr: MaterialGrade[] = [];
+	m_selectedOptionsArrCache.forEach( (value: SelectOptionType | null, _index: number) : void =>
+	{
+		if(m_selectedOptionsArrCache[_index]?.value != null)
 		{
-			callback(materialGrade);
+			const out = GetMaterialGradeFromKey(value!.value);
+			out && outArr.push(out);
 		}
-	}
+	});
+	return outArr;
 }
 
 function OnGradeMapChanged() : void
@@ -204,8 +210,10 @@ function GetMaterialGradeFromKey(i_key: string| null) : MaterialGrade | null
 
 const url = "https://docs.google.com/spreadsheets/d/1uCKHsgeu1TUDqvVJQ2T89dLbTLlLwSxB/export?format=xlsx";
 
-const m_currentSelectedGradeKeys: {first:string|null, second:string|null} = {first:null,second:null};
-const m_onSelectCallbacks: React.Dispatch<React.SetStateAction<[MaterialGrade | null, MaterialGrade | null]>>[] = [];
 const m_onGradeMapChanged: React.Dispatch<React.SetStateAction<SelectOptionType[]>>[] = [];
 
 let m_gradeMap: Record<string,MaterialGrade> = {};
+
+let m_selectedOptionsArrCache: (SelectOptionType | null) [] = [];
+let m_notifySelectBarsOnSwitchButton: React.Dispatch<React.SetStateAction<(SelectOptionType | null)[]>>;
+const m_notifyGetMaterialOnSelect: React.Dispatch<React.SetStateAction<MaterialGrade[]>>[] = [];

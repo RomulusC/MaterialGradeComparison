@@ -1,22 +1,28 @@
-import { useState } from 'react'
-import { AddCallbackOnSelectedMaterialOptions, MaterialGrade } from "../Lib/GradeMapManager.tsx";
+import { useState, useEffect } from 'react'
+import {  MaterialGrade, RegisterGetMaterialOnSelect } from "../Lib/GradeMapManager.tsx";
 
 export default function DisplayChosenMaterialGrades() : JSX.Element
 {   
-    const [materialGradePairs, SetMaterialGradePairsCallback] = useState<[MaterialGrade | null, MaterialGrade| null]>([null,null]); // TODO: Have a backend cache and serve Excel file
-	AddCallbackOnSelectedMaterialOptions(SetMaterialGradePairsCallback);
+    const [materialGradeSet, SetMaterialGradeSet] = useState<MaterialGrade[]>([]); // TODO: Have a backend cache and serve Excel file
 
-    const outPut1Arr: string[] = materialGradePairs[0] ? GetDebugMaterialGradeDataAsStringArr(materialGradePairs[0]) : [];
-    const outPut2Arr: string[] = materialGradePairs[1] ? GetDebugMaterialGradeDataAsStringArr(materialGradePairs[1]) : [];
+    // Component life cycle:
+    // Init
+    useEffect( () => 
+    {
+        RegisterGetMaterialOnSelect(SetMaterialGradeSet);
+    }, []);
 
     return(
         <>
-            <div className="SelectBoxContainer">
-                {materialGradePairs[0] && <> {outPut1Arr} </>}
-            </div>
-            <div className="SelectBoxContainer">
-                {materialGradePairs[1] &&<> {outPut2Arr} </>}
-            </div>
+            {
+                materialGradeSet.map( (value: MaterialGrade, index: number) =>
+                    <>
+                        <div className="SelectBoxContainer">
+                            {value &&<> {GetDebugMaterialGradeDataAsStringArr(value)} </>}
+                        </div>
+                    </>
+                )
+            }
         </>
     );
 }
